@@ -28,7 +28,7 @@
                     <Setter Property="Background" Value="{Binding Background}"/>
                 </Style>
                                                 
-                <Style TargetType="TextBlock" x:Key="PositionCounter">
+                <Style TargetType="TextBlock" x:Key="BoardPosition">
                     <Setter Property="FontWeight" Value="Bold"/>
                     <Setter Property="FontSize" Value="15"/>
                     <Setter Property="TextAlignment" Value="Center"/>
@@ -40,15 +40,15 @@
                     <Setter Property="Padding" Value="2"/>
                     <Setter Property="Text" Value="{Binding Count}"/>
                 </Style>                
-                <Style BasedOn="{StaticResource PositionCounter}" x:Key="TopPositionCounter" TargetType="TextBlock">
+                <Style BasedOn="{StaticResource BoardPosition}" x:Key="TopPositionCounter" TargetType="TextBlock">
                     <Setter Property="VerticalAlignment" Value="Top"/>
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 </Style>
-                <Style BasedOn="{StaticResource PositionCounter}" x:Key="BottomPositionCounter" TargetType="TextBlock">
+                <Style BasedOn="{StaticResource BoardPosition}" x:Key="BottomPositionCounter" TargetType="TextBlock">
                     <Setter Property="VerticalAlignment" Value="Bottom"/>
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 </Style>
-                <Style BasedOn="{StaticResource PositionCounter}" x:Key="RightPositionCounter" TargetType="TextBlock">
+                <Style BasedOn="{StaticResource BoardPosition}" x:Key="RightPositionCounter" TargetType="TextBlock">
                     <Setter Property="VerticalAlignment" Value="Center"/>
                     <Setter Property="HorizontalAlignment" Value="Right"/>
                 </Style>
@@ -88,34 +88,34 @@
             </Border>
 
             <Border Canvas.Left="0" Canvas.Top="502" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Jail]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="456" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Pall Mall]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="410" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Electric Company]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="362" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Whitehall]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="315" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Northumberland Avenue]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="268" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Marylebone Road]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="221" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Bow Street]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="174" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Community Chest #2]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="127" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Marlborough Street]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
             <Border Canvas.Left="0" Canvas.Top="80" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Vine Street]}">
-                <TextBlock Style="{StaticResource PositionCounter}"/>
+                <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
 
             <Border Canvas.Left="0" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[FreeParking]}">

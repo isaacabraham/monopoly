@@ -59,8 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="PositionCounter.cs" />
-    <Compile Include="ResultsFactory.cs" />
+    <Compile Include="BoardPosition.cs" />
     <Compile Include="Commands\StepByStepCommand.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
