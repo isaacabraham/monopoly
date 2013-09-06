@@ -1,4 +1,4 @@
-using Microsoft.FSharp.Core;
+using Monopoly;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,14 +22,13 @@ namespace MonopolyGui
         public bool CanExecute(Object parameter) { return true; }
         public void Execute(Object parameter)
         {
-            var onPrint = FuncConvert.ToFSharpFunc<Controller.State, Unit>(s =>
+            var controller = new Controller();
+            controller.OnMoved += (o,e) =>
             {
-                var name = Controller.getName(s.movingTo);
+                var name = Controller.GetName(e.MovingTo);
                 results[name].Increment();
-                return null;
-            });
-
-            Task.Run(() => Controller.playGame(50000, onPrint));
+            };
+            Task.Run(() => controller.PlayGame(50000));
         }
     }
 }

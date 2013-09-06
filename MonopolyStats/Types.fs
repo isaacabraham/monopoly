@@ -1,16 +1,6 @@
-﻿module Monopoly
+﻿namespace Monopoly
 
-type Set =
-    | Brown
-    | LightBlue
-    | Pink
-    | Orange
-    | Red
-    | Yellow
-    | Green
-    | DarkBlue
-
-type Position =
+type Position = 
     | Property of string
     | Station of string
     | Utility of string
@@ -22,7 +12,7 @@ type Position =
     | FreeParking
     | Jail
 
-type Card =
+type Card = 
     | Other
     | Move of int
     | GoTo of Position
