@@ -7,7 +7,7 @@ open System.Collections.Generic
 /// Gets the state of the game at a given time
 type MovementEvent = 
     { ///<summary>Gets the value of the dice rolled.</summary>
-      Rolled: int * int
+      Rolled: (int * int) option
       ///<summary>Gets the position the player is moving to.</summary>
       MovingTo: Position
       ///<summary>Gets the number of consequitive doubles rolled.</summary>
@@ -20,7 +20,7 @@ type Controller() =
     /// Gets the textual representation of a position on the board.
     let picker = new Random()
     
-    let moveBy currentPosition rolls = 
+    let moveBy rolls currentPosition = 
         let totalDie = fst rolls + snd rolls
         let currentIndex = Board |> Array.findIndex((=) currentPosition)
         let newIndex = currentIndex + totalDie
@@ -29,9 +29,9 @@ type Controller() =
                else newIndex]
     
     let pickFromDeck currentPosition (deck: Card list) = 
-        match deck.[picker.Next(0,16)] with
+        match deck.[picker.Next(0, 16)] with
         | GoTo(pos) -> Some(pos)
-        | Move(by) -> Some(moveBy currentPosition (by,0))
+        | Move(by) -> Some(currentPosition |> moveBy(by, 0))
         | Other -> None
     
     let checkForMovement position = 
@@ -42,46 +42,43 @@ type Controller() =
         | _ -> None
     
     let calculatesDoubles position doublesInARow rolls = 
-        match position with
-        | Jail -> 0,false
-        | _ -> 
-            let double = (fst rolls = snd rolls)
-            
-            let doublesInARow = 
-                if double then doublesInARow + 1
-                else 0
-            if doublesInARow = 3 then (0,true)
-            else (doublesInARow,false)
+        let double = (fst rolls = snd rolls)
+        
+        let doublesInARow = 
+            if double then doublesInARow + 1
+            else 0
+        if doublesInARow = 3 then (0, true)
+        else (doublesInARow, false)
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let rec playTurn originalPosition (die: Random) doublesInARow turnsToPlay = 
-        if turnsToPlay = 0 then ignore()
+    let rec playTurn originalPosition (die: Random) doublesInARow turnsToPlay history = 
+        if turnsToPlay = 0 then List.rev history
         else 
-            let doRoll() = die.Next(1,7)
-            let dice = doRoll(),doRoll()
-            let doublesInARow,goToJail = calculatesDoubles originalPosition doublesInARow dice
+            let doRoll() = die.Next(1, 7)
+            let dice = doRoll(), doRoll()
+            let doublesInARow, goToJail = calculatesDoubles originalPosition doublesInARow dice
             
-            let doPrintPosition movementType movingTo = 
-                onMovedEvent.Trigger({ Rolled = dice
-                                       MovingTo = movingTo
-                                       DoubleCount = doublesInARow
-                                       MovementType = movementType })
+            let generateMovement movementType movingTo rolled = 
+                let movement = 
+                    { Rolled = rolled
+                      MovingTo = movingTo
+                      DoubleCount = doublesInARow
+                      MovementType = movementType }
+                onMovedEvent.Trigger(movement)
+                movement
             
-            let newPosition = 
-                if goToJail then 
-                    doPrintPosition "moved to" Jail
-                    Jail
+            let movements = 
+                if goToJail then [ generateMovement "moved to" Jail (Some dice) ]
                 else 
-                    let newPosition = moveBy originalPosition dice
-                    doPrintPosition "landed on" newPosition
-                    match checkForMovement newPosition with
+                    let initialMove = generateMovement "landed on" (originalPosition |> moveBy dice) (Some dice)
+                    match checkForMovement initialMove.MovingTo with
                     | Some(movedTo) -> 
-                        doPrintPosition "moved to" movedTo
-                        movedTo
-                    | None -> newPosition
+                        let secondaryMove = generateMovement "moved to" movedTo None
+                        [ secondaryMove;initialMove ]
+                    | None -> [ initialMove ]
             
-            playTurn newPosition die doublesInARow (turnsToPlay - 1)
+            playTurn movements.Head.MovingTo die doublesInARow (turnsToPlay - 1) (movements @ history)
     
     /// <summary>Fired whenever a move occurs</summary>
     [<CLIEvent>]
@@ -99,4 +96,4 @@ type Controller() =
     /// <param name="turnsToPlay">The number of turns to play</param>
     member x.PlayGame turnsToPlay = 
         let die = new Random()
-        playTurn Go die 0 turnsToPlay
+        playTurn Go die 0 turnsToPlay []

@@ -1,3 +1,4 @@
+using Monopoly;
 using PropertyChanged;
 using System;
 using System.Windows.Media;
@@ -13,7 +14,7 @@ namespace MonopolyGui
         /// <summary>
         /// The actual position data.
         /// </summary>
-        public Monopoly.Position Position { get; private set; }
+        public Position Position { get; private set; }
         /// <summary>
         /// The number of times that this property has been landed on.
         /// </summary>
@@ -27,7 +28,7 @@ namespace MonopolyGui
         /// </summary>
         public Brush Background { get; private set; }
 
-        public BoardPosition(Monopoly.Position position)
+        public BoardPosition(Position position)
         {
             Position = position;
         }

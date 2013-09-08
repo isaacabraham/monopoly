@@ -26,7 +26,7 @@ let printPosition(state: MovementEvent) =
 
 let main argv = 
     let controller = Monopoly.Controller()
-    let history = controller.PlayGame(5000)
+    let history = controller.PlayGame(10)
     printfn ""
     printfn "statistics"
     printfn "%A" argv

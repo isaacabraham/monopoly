@@ -34,14 +34,16 @@ namespace MonopolyGui
 
         public void Execute(Object parameter)
         {
-
             DeselectCurrentPosition(gameHistory.Current);
             gameHistory.MoveNext();
 
             var state = gameHistory.Current;
             var movingToName = Controller.GetName(state.MovingTo);
 
-            Message = String.Format("Rolled {0} & {1}. {2} {3} (Doubles: {4})", state.Rolled.Item1, state.Rolled.Item2, state.MovementType, movingToName, state.DoubleCount);
+            if (state.Rolled.IsSome())
+                Message = String.Format("Rolled {0} & {1}. {2} {3} (Doubles: {4})", state.Rolled.Value.Item1, state.Rolled.Value.Item2, state.MovementType, movingToName, state.DoubleCount);
+            else
+                Message = String.Format("{0} {1}", state.MovementType, movingToName);
             SelectNextPosition(movingToName);
         }
 
