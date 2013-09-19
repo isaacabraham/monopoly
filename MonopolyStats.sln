@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20827.3
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MonopolyStats", "MonopolyStats\MonopolyStats.fsproj", "{C78081AF-58BF-49DF-B726-03964056EC00}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonopolyGui", "MonopolyGui\MonopolyGui.csproj", "{25D80E60-B5E6-4B8B-8357-DD362E3C0BD9}"

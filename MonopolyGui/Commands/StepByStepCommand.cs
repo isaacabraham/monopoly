@@ -1,3 +1,4 @@
+using Microsoft.FSharp.Core;
 using Monopoly;
 using PropertyChanged;
 using System;
@@ -58,6 +59,14 @@ namespace MonopolyGui
             var result = results[movingToName];
             result.Increment();
             result.Select();
+        }
+    }
+
+    public static class FSOptionEx
+    {
+        public static bool IsSome<T>(this FSharpOption<T> option)
+        {
+            return FSharpOption<T>.get_IsSome(option);
         }
     }
 }

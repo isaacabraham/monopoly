@@ -4,21 +4,13 @@ open Monopoly.Data
 open System
 open System.Collections.Generic
 
-/// Gets the state of the game at a given time
 type MovementEvent = 
-    { ///<summary>Gets the value of the dice rolled.</summary>
-      Rolled: (int * int) option
-      ///<summary>Gets the position the player is moving to.</summary>
+    { Rolled: (int * int) option
       MovingTo: Position
-      ///<summary>Gets the number of consequitive doubles rolled.</summary>
       DoubleCount: int
-      ///<summary>Gets the type of movement that has occurred.</summary>
-      MovementType: String }
+      MovementType: string }
 
 type Controller() = 
-    
-    /// Gets the textual representation of a position on the board.
-    let picker = new Random()
     
     let moveBy rolls currentPosition = 
         let totalDie = fst rolls + snd rolls
@@ -28,36 +20,35 @@ type Controller() =
                else if newIndex < 0 then newIndex + 40
                else newIndex]
     
-    let pickFromDeck currentPosition (deck: Card list) = 
+    let pickFromDeck (deck: Card list) currentPosition = 
+        let picker = new Random()
         match deck.[picker.Next(0, 16)] with
         | GoTo(pos) -> Some(pos)
-        | Move(by) -> Some(currentPosition |> moveBy(by, 0))
+        | Move(numberOfSpaces) -> Some(currentPosition |> moveBy(numberOfSpaces, 0))
         | Other -> None
     
     let checkForMovement position = 
         match position with
-        | Chance(_) -> pickFromDeck position ChanceDeck
-        | CommunityChest(_) -> pickFromDeck position CommunityChestDeck
+        | Chance(_) -> pickFromDeck ChanceDeck position
+        | CommunityChest(_) -> pickFromDeck CommunityChestDeck position
         | GoToJail -> Some(Jail)
         | _ -> None
     
-    let calculatesDoubles position doublesInARow rolls = 
-        let double = (fst rolls = snd rolls)
-        
+    let calculateDoubles position doublesInARow rolls = 
         let doublesInARow = 
-            if double then doublesInARow + 1
+            if (fst rolls = snd rolls) then doublesInARow + 1
             else 0
         if doublesInARow = 3 then (0, true)
         else (doublesInARow, false)
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let rec playTurn originalPosition (die: Random) doublesInARow turnsToPlay history = 
+    let rec playTurn currentPosition (die: Random) doublesInARow turnsToPlay history = 
         if turnsToPlay = 0 then List.rev history
         else 
             let doRoll() = die.Next(1, 7)
             let dice = doRoll(), doRoll()
-            let doublesInARow, goToJail = calculatesDoubles originalPosition doublesInARow dice
+            let doublesInARow, rolledThreeDoubles = calculateDoubles currentPosition doublesInARow dice
             
             let generateMovement movementType movingTo rolled = 
                 let movement = 
@@ -68,17 +59,17 @@ type Controller() =
                 onMovedEvent.Trigger(movement)
                 movement
             
-            let movements = 
-                if goToJail then [ generateMovement "moved to" Jail (Some dice) ]
+            let movementsThisTurn = 
+                if rolledThreeDoubles then [ generateMovement "moved to" Jail (Some dice) ]
                 else 
-                    let initialMove = generateMovement "landed on" (originalPosition |> moveBy dice) (Some dice)
+                    let initialMove = generateMovement "landed on" (currentPosition |> moveBy dice) (Some dice)
                     match checkForMovement initialMove.MovingTo with
                     | Some(movedTo) -> 
                         let secondaryMove = generateMovement "moved to" movedTo None
-                        [ secondaryMove;initialMove ]
+                        [ secondaryMove; initialMove ]
                     | None -> [ initialMove ]
             
-            playTurn movements.Head.MovingTo die doublesInARow (turnsToPlay - 1) (movements @ history)
+            playTurn movementsThisTurn.Head.MovingTo die doublesInARow (turnsToPlay - 1) (movementsThisTurn @ history)
     
     /// <summary>Fired whenever a move occurs</summary>
     [<CLIEvent>]

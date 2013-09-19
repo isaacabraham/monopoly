@@ -9,7 +9,8 @@ type disposableColor(newColor) =
     do Console.ForegroundColor <- newColor
     interface IDisposable with
         member this.Dispose() = Console.ForegroundColor <- oldColor
-
+    
+/// Gets the textual representation of a position on the board.
 let printPosition(state: MovementEvent) = 
     let color,text = 
         match state.MovingTo with
