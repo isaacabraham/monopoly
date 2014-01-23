@@ -25,11 +25,12 @@ let printPosition(state: MovementEvent) =
     use temp = new disposableColor(color)
     printfn "%s %s" state.MovementType text
 
+[<EntryPoint>]
 let main argv = 
     let controller = Monopoly.Controller()
-    let history = controller.PlayGame(10)
-    printfn ""
-    printfn "statistics"
-    printfn "%A" argv
+    let history = controller.PlayGame(100)
+
+    for entry in history do
+        printfn "%A %s %s" entry.Rolled entry.MovementType (Controller.GetName entry.MovingTo)
+
     0 // return an integer exit code
-      
