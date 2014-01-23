@@ -10,28 +10,27 @@ type MovementEvent =
       DoubleCount: int
       MovementType: string }
 
-type Controller() = 
-    
+type Controller() =   
     let moveBy rolls currentPosition = 
         let totalDie = fst rolls + snd rolls
-        let currentIndex = Board |> Array.findIndex((=) currentPosition)
+        let currentIndex = Board |> List.findIndex((=) currentPosition)
         let newIndex = currentIndex + totalDie
         Board.[if newIndex >= 40 then newIndex - 40
                else if newIndex < 0 then newIndex + 40
                else newIndex]
     
-    let pickFromDeck (deck: Card list) currentPosition = 
+    let pickFromDeck currentPosition deck = 
         let picker = new Random()
-        match deck.[picker.Next(0, 16)] with
-        | GoTo(pos) -> Some(pos)
-        | Move(numberOfSpaces) -> Some(currentPosition |> moveBy(numberOfSpaces, 0))
+        match (picker.Next(0, 16)) |> List.nth deck with
+        | GoTo destination -> Some destination
+        | Move numberOfSpaces -> Some(currentPosition |> moveBy(numberOfSpaces, 0))
         | Other -> None
     
-    let checkForMovement position = 
-        match position with
-        | Chance(_) -> pickFromDeck ChanceDeck position
-        | CommunityChest(_) -> pickFromDeck CommunityChestDeck position
-        | GoToJail -> Some(Jail)
+    let checkForMovement currentPosition = 
+        match currentPosition with
+        | Chance _ -> ChanceDeck |> pickFromDeck currentPosition
+        | CommunityChest _ -> CommunityChestDeck |> pickFromDeck currentPosition
+        | GoToJail -> Some Jail
         | _ -> None
     
     let calculateDoubles position doublesInARow rolls = 
@@ -71,11 +70,11 @@ type Controller() =
             
             playTurn movementsThisTurn.Head.MovingTo die doublesInARow (turnsToPlay - 1) (movementsThisTurn @ history)
     
-    /// <summary>Fired whenever a move occurs</summary>
+    /// Fired whenever a move occurs
     [<CLIEvent>]
     member x.OnMoved = onMovedEvent.Publish
     
-    /// <summary>Gets the display name for the supplied position.</summary>
+    /// Gets the display name for the supplied position.
     static member GetName position = 
         match position with
         | Property(name) | Station(name) | Utility(name) | Tax(name) -> name
@@ -83,8 +82,7 @@ type Controller() =
         | CommunityChest(number) -> sprintf "Community Chest #%d" number
         | _ -> sprintf "%A" position
     
-    /// <summary>Plays the game of Monopoly</summary>
-    /// <param name="turnsToPlay">The number of turns to play</param>
+    /// Plays the game of Monopoly
     member x.PlayGame turnsToPlay = 
         let die = new Random()
         playTurn Go die 0 turnsToPlay []

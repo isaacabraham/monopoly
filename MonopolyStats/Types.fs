@@ -1,12 +1,12 @@
 ﻿namespace Monopoly
 
 type Position = 
-    | Property of string
-    | Station of string
-    | Utility of string
-    | Chance of int
-    | CommunityChest of int
-    | Tax of string
+    | Property of Name:string
+    | Station of Name:string
+    | Utility of Type:string
+    | Chance of Id:int
+    | CommunityChest of Id:int
+    | Tax of Type:string
     | GoToJail
     | Go
     | FreeParking
@@ -14,5 +14,5 @@ type Position =
 
 type Card = 
     | Other
-    | Move of int
-    | GoTo of Position
+    | Move of Distance:int
+    | GoTo of Destination:Position
