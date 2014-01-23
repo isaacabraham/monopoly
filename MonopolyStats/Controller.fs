@@ -27,7 +27,7 @@ type Controller() =
                else newIndex]
     
     let picker = new Random()
-    let pickFromDeck (deck : Card list) currentPosition = 
+    let pickFromDeck currentPosition deck = 
         match (picker.Next(0, 16)) |> List.nth deck with
         | GoTo destination -> Some destination
         | Move numberOfSpaces -> Some(currentPosition |> moveBy(numberOfSpaces, 0))
