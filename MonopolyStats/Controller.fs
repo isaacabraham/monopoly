@@ -22,9 +22,7 @@ type Controller() =
         let totalDie = fst rolls + snd rolls
         let currentIndex = Board |> List.findIndex((=) currentPosition)
         let newIndex = currentIndex + totalDie
-        Board.[if newIndex >= 40 then newIndex - 40
-               else if newIndex < 0 then newIndex + 40
-               else newIndex]
+        Board.[newIndex % 40]
     
     let picker = new Random()
     let pickFromDeck currentPosition deck = 
@@ -49,10 +47,9 @@ type Controller() =
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let rec playTurn currentPosition (die : Random) doublesInARow turnsToPlay history = 
+    let rec playTurn currentPosition doRoll doublesInARow turnsToPlay history = 
         if turnsToPlay = 0 then List.rev history
-        else 
-            let doRoll() = die.Next(1, 7)
+        else
             let dice = doRoll(), doRoll()
             let doublesInARow, rolledThreeDoubles = calculateDoubles currentPosition doublesInARow dice
             
@@ -75,11 +72,11 @@ type Controller() =
                         [ secondaryMove; initialMove ]
                     | None -> [ initialMove ]
             
-            playTurn movementsThisTurn.Head.MovingTo die doublesInARow (turnsToPlay - 1) (movementsThisTurn @ history)
+            playTurn movementsThisTurn.Head.MovingTo doRoll doublesInARow (turnsToPlay - 1) (movementsThisTurn @ history)
     
     /// Fired whenever a move occurs
     [<CLIEvent>]
-    member x.OnMoved = onMovedEvent.Publish
+    member __.OnMoved = onMovedEvent.Publish
     
     /// Gets the display name for the supplied position.
     static member GetName position = 
@@ -90,6 +87,8 @@ type Controller() =
         | _ -> sprintf "%A" position
     
     /// Plays the game of Monopoly
-    member x.PlayGame turnsToPlay = 
-        let die = new Random()
-        playTurn Go die 0 turnsToPlay []
+    member __.PlayGame turnsToPlay = 
+        let doRoll =
+            let die = new Random()
+            fun () -> die.Next(1, 7)
+        playTurn Go doRoll 0 turnsToPlay []
