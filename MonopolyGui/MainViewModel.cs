@@ -13,8 +13,7 @@ namespace MonopolyGui
 
         public MainViewModel()
         {
-            Results = Data.Board.ToDictionary(pos => Controller.GetName(pos),
-                                              pos => new BoardPosition(pos));
+            Results = Data.Board.ToDictionary(pos => pos.ToString(), pos => new BoardPosition(pos));
             AutoPlayCommand = new AutoPlayCommand(Results);
             StepByStepCommand = new StepByStepCommand(Results);
         }

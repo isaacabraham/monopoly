@@ -2,60 +2,62 @@
 
 open Monopoly.Data
 open System
-open System.Collections.Generic
+
+type MovementType = 
+    | LandedOn
+    | MovedTo
+    override x.ToString() =
+        match x with
+        | LandedOn -> "Landed on"
+        | MovedTo -> "Moved to"
 
 /// A movement that has occurred for a player.
 type MovementEvent = 
     { Rolled : (int * int) option
       MovingTo : Position
       DoubleCount : int
-      MovementType : string }
-
-(*
-The controller, which is the main entry point for clients. We have to create a full class rather than a basic module as
-it seems that CLIEvents do not get consumed nicely in modules.
-*)
+      MovementType : MovementType }
 
 /// Manages a game.
-type Controller() =   
-    let moveBy rolls currentPosition = 
-        let totalDie = fst rolls + snd rolls
-        let currentIndex = Board |> List.findIndex((=) currentPosition)
-        let newIndex = currentIndex + totalDie
+type Controller() = 
+    
+    let moveBy dice currentPosition = 
+        let diceValue = fst dice + snd dice
+        let currentIndex = Board |> List.findIndex ((=) currentPosition)
+        let newIndex = currentIndex + diceValue
         Board.[newIndex % 40]
     
-    let picker = new Random()
-    let pickFromDeck currentPosition deck = 
-        match (picker.Next(0, 16)) |> List.nth deck with
-        | GoTo destination -> Some destination
-        | Move numberOfSpaces -> Some(currentPosition |> moveBy(numberOfSpaces, 0))
-        | Other -> None
+    let picker = Random()
     
-    let checkForMovement currentPosition = 
+    let tryAutoMove currentPosition = 
+        let tryMoveFromDeck currentPosition deck = 
+            match (picker.Next(0, 16)) |> List.nth deck with
+            | GoTo destination -> Some destination
+            | Move numberOfSpaces -> Some(currentPosition |> moveBy (numberOfSpaces, 0))
+            | Other -> None
         match currentPosition with
-        | Chance _ -> ChanceDeck |> pickFromDeck currentPosition
-        | CommunityChest _ -> CommunityChestDeck |> pickFromDeck currentPosition
+        | Chance _ -> ChanceDeck |> tryMoveFromDeck currentPosition
+        | CommunityChest _ -> CommunityChestDeck |> tryMoveFromDeck currentPosition
         | GoToJail -> Some Jail
         | _ -> None
     
-    let calculateDoubles position doublesInARow rolls = 
-        let doublesInARow = 
-            if (fst rolls = snd rolls) then doublesInARow + 1
-            else 0
-        if doublesInARow = 3 then (0, true)
-        else (doublesInARow, false)
+    let calculateDoubles = 
+        function 
+        | 3, _ -> 0
+        | doublesInARow, (first, second) when first = second -> doublesInARow + 1
+        | _ -> 0
     
     let onMovedEvent = new Event<MovementEvent>()
     
     let rec playTurn currentPosition doRoll doublesInARow turnsToPlay history = 
         if turnsToPlay = 0 then List.rev history
-        else
+        else 
             let dice = doRoll(), doRoll()
-            let doublesInARow, rolledThreeDoubles = calculateDoubles currentPosition doublesInARow dice
+            let doublesInARow = calculateDoubles (doublesInARow, dice)
             
-            let generateMovement movementType movingTo rolled = 
+            let generateMovement movementType movingTo dice = 
                 let movement = 
-                    { Rolled = rolled
+                    { Rolled = dice
                       MovingTo = movingTo
                       DoubleCount = doublesInARow
                       MovementType = movementType }
@@ -63,32 +65,26 @@ type Controller() =
                 movement
             
             let movementsThisTurn = 
-                if rolledThreeDoubles then [ generateMovement "moved to" Jail (Some dice) ]
-                else 
-                    let initialMove = generateMovement "landed on" (currentPosition |> moveBy dice) (Some dice)
-                    match checkForMovement initialMove.MovingTo with
-                    | Some(movedTo) -> 
-                        let secondaryMove = generateMovement "moved to" movedTo None
+                match doublesInARow with
+                | 3 -> [ generateMovement MovedTo Jail (Some dice) ]
+                | _ -> 
+                    let initialMove = generateMovement LandedOn (currentPosition |> moveBy dice) (Some dice)
+                    match tryAutoMove initialMove.MovingTo with
+                    | Some automaticMove -> 
+                        let secondaryMove = generateMovement MovedTo automaticMove None
                         [ secondaryMove; initialMove ]
                     | None -> [ initialMove ]
             
-            playTurn movementsThisTurn.Head.MovingTo doRoll doublesInARow (turnsToPlay - 1) (movementsThisTurn @ history)
+            playTurn movementsThisTurn.Head.MovingTo doRoll doublesInARow (turnsToPlay - 1) 
+                (movementsThisTurn @ history)
     
     /// Fired whenever a move occurs
     [<CLIEvent>]
     member __.OnMoved = onMovedEvent.Publish
     
-    /// Gets the display name for the supplied position.
-    static member GetName position = 
-        match position with
-        | Property(name) | Station(name) | Utility(name) | Tax(name) -> name
-        | Chance(number) -> sprintf "Chance #%d" number
-        | CommunityChest(number) -> sprintf "Community Chest #%d" number
-        | _ -> sprintf "%A" position
-    
     /// Plays the game of Monopoly
     member __.PlayGame turnsToPlay = 
-        let doRoll =
+        let doRoll = 
             let die = new Random()
             fun () -> die.Next(1, 7)
         playTurn Go doRoll 0 turnsToPlay []

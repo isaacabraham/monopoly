@@ -23,11 +23,7 @@ namespace MonopolyGui
         public void Execute(Object parameter)
         {
             var controller = new Controller();
-            controller.OnMoved += (o,e) =>
-            {
-                var name = Controller.GetName(e.MovingTo);
-                results[name].Increment();
-            };
+            controller.OnMoved += (o, e) => results[e.MovingTo.ToString()].Increment();
             Task.Run(() => controller.PlayGame(50000));
         }
     }

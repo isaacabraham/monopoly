@@ -2,24 +2,24 @@
     
 let Board =
     [ Go;
-      Property "Old Kent Road"; CommunityChest 1; Property "Whitechapel Road";
+      Property (Brown, "Old Kent Road"); CommunityChest 1; Property (Brown, "Whitechapel Road");
       Tax "Income Tax"; Station "Kings Cross";
-      Property "Angel Islington"; Chance 1; Property "Euston Road"; Property "Pentonville Road";
+      Property (Blue, "Angel Islington"); Chance 1; Property (Blue, "Euston Road"); Property (Blue, "Pentonville Road");
       Jail;
        
-      Property "Pall Mall"; Utility "Electric Company"; Property "Whitehall"; Property "Northumberland Avenue";
+      Property (Pink, "Pall Mall"); Utility "Electric Company"; Property (Pink, "Whitehall"); Property (Pink, "Northumberland Avenue");
       Station "Marylebone Road";
-      Property "Bow Street"; CommunityChest 2; Property "Marlborough Street"; Property "Vine Street";
+      Property (Orange, "Bow Street"); CommunityChest 2; Property (Orange, "Marlborough Street"); Property (Orange, "Vine Street");
       FreeParking;
        
-      Property "Strand"; Chance 2; Property "Fleet Street"; Property "Trafalgar Square";
+      Property (Red, "Strand"); Chance 2; Property (Red, "Fleet Street"); Property (Red, "Trafalgar Square");
       Station "Fenchurch Street";
-      Property "Leicester Square"; Property "Coventry Street"; Utility "Water Works"; Property "Picaddilly";
+      Property (Yellow, "Leicester Square"); Property (Yellow, "Coventry Street"); Utility "Water Works"; Property (Yellow, "Picaddilly");
       GoToJail;
        
-      Property "Regent Street"; Property "Oxford Street"; CommunityChest 3; Property "Bond Street";
+      Property (Green, "Regent Street"); Property (Green, "Oxford Street"); CommunityChest 3; Property (Green, "Bond Street");
       Station "Liverpool Street"; Chance 3;
-      Property "Park Lane"; Tax "Super Tax"; Property "Mayfair"; ]
+      Property (Purple, "Park Lane"); Tax "Super Tax"; Property (Purple, "Mayfair"); ]
 
-let ChanceDeck = [GoTo <| Property "Mayfair"; GoTo Go; GoTo Jail; GoTo <| Property "Trafalgar Square"; GoTo <| Station "Marylebone Road"; GoTo <| Property "Pall Mall"; Move -3;] @ [for i in 1..9 -> Card.Other]
-let CommunityChestDeck = [GoTo Go; GoTo Jail; GoTo <| Property "Old Kent Road";] @ [for i in 1..13 -> Card.Other]
+let ChanceDeck = [GoTo <| Property (Purple, "Mayfair"); GoTo Go; GoTo Jail; GoTo <| Property (Red, "Trafalgar Square"); GoTo <| Station "Marylebone Road"; GoTo <| Property (Pink, "Pall Mall"); Move -3;] @ [for _ in 1..9 -> Card.Other]
+let CommunityChestDeck = [GoTo Go; GoTo Jail; GoTo <| Property (Brown, "Old Kent Road");] @ [for _ in 1..13 -> Card.Other]

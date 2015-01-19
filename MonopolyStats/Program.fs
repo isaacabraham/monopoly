@@ -1,36 +1,38 @@
 ﻿module Monopoly.Runner
 
-open Data
 open System
-open System.Collections.Generic
 
-type disposableColor(newColor) = 
+let buildDisposable newColor = 
     let oldColor = Console.ForegroundColor
     do Console.ForegroundColor <- newColor
-    interface IDisposable with
-        member this.Dispose() = Console.ForegroundColor <- oldColor
-    
+    { new IDisposable with member __.Dispose() = Console.ForegroundColor <- oldColor }
+
 /// Gets the textual representation of a position on the board.
-let printPosition(state: MovementEvent) = 
-    let color,text = 
+let printPosition (state : MovementEvent) = 
+    let color, text = 
         match state.MovingTo with
-        | Property(name) -> ConsoleColor.Gray,name
-        | Station(name) -> ConsoleColor.White,name
-        | Utility(name) -> ConsoleColor.Gray,name
-        | Tax(name) -> ConsoleColor.DarkCyan,name
-        | Chance(number) -> ConsoleColor.DarkGreen,sprintf "Chance %d" number
-        | CommunityChest(number) -> ConsoleColor.DarkGreen,sprintf "Community Chest %d" number
-        | _ -> ConsoleColor.Gray,sprintf "%A" state.MovingTo
+        | Property(Brown, name) -> ConsoleColor.DarkYellow, name
+        | Property(Blue, name) -> ConsoleColor.Blue, name
+        | Property(Pink, name) -> ConsoleColor.Magenta, name
+        | Property(Orange, name) -> ConsoleColor.DarkMagenta, name
+        | Property(Red, name) -> ConsoleColor.Red, name
+        | Property(Yellow, name) -> ConsoleColor.Yellow, name
+        | Property(Green, name) -> ConsoleColor.Green, name
+        | Property(Purple, name) -> ConsoleColor.DarkMagenta, name
+        | Utility name -> ConsoleColor.Gray, name
+        | Station name -> ConsoleColor.White, name
+        | Tax name -> ConsoleColor.White, name
+        | Chance number -> ConsoleColor.DarkCyan, sprintf "Chance %d" number
+        | CommunityChest number -> ConsoleColor.Cyan, sprintf "Community Chest %d" number
+        | _ -> ConsoleColor.Gray, sprintf "%A" state.MovingTo
     
-    use temp = new disposableColor(color)
-    printfn "%s %s" state.MovementType text
+    use x = buildDisposable color
+    printfn "%A %s" state.MovementType text
 
 [<EntryPoint>]
-let main argv = 
+let main _ = 
     let controller = Monopoly.Controller()
     let history = controller.PlayGame(100)
-
     for entry in history do
-        printfn "%A %s %s" entry.Rolled entry.MovementType (Controller.GetName entry.MovingTo)
-
-    0 // return an integer exit code
+        printPosition entry
+    0

@@ -8,11 +8,10 @@ open System
 #load "Controller.fs"
 open Monopoly
 
-let printMove (index,move) = sprintf "%d %A %s %s (doubles %d)" index move.Rolled move.MovementType (Controller.GetName(move.MovingTo)) move.DoubleCount
+let printMove index move = sprintf "%d: %A %s %s (doubles %d)" index move.Rolled move.MovementType (Controller.GetName(move.MovingTo)) move.DoubleCount
 
 let controller = Controller()
-let history = controller.PlayGame(100)
-              |> Seq.toArray
+let history = controller.PlayGame(100) |> Seq.toArray
 
 for item in history do
     printfn "%A, %s %A" item.Rolled item.MovementType item.MovingTo
@@ -34,3 +33,6 @@ diceCombos history
 |> Seq.map(fun (key,rolls) -> key, Seq.length rolls)
 |> Seq.sortBy(fun (_,rolls) -> -rolls)
 |> Seq.toArray
+
+
+controller.PlayGame(1000) |> Seq.mapi printMove |> Seq.toArray
