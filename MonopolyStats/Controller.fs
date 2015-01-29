@@ -40,42 +40,49 @@ type Controller() =
         | CommunityChest _ -> CommunityChestDeck |> tryMoveFromDeck currentPosition
         | GoToJail -> Some Jail
         | _ -> None
-    
-    let calculateDoubles = 
-        function 
-        | 3, _ -> 0
-        | doublesInARow, (first, second) when first = second -> doublesInARow + 1
-        | _ -> 0
+
+    let (|ThreeDoubles|KeepGoing|) = function
+        | 3 -> ThreeDoubles
+        | _ -> KeepGoing
+
+    let (|Double|DifferentDice|) =
+        function
+        | a,b when a = b -> Double
+        | _ -> DifferentDice        
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let rec playTurn currentPosition doRoll doublesInARow turnsToPlay history = 
+    let rec playTurn currentPosition doRoll doublesFromLastThrow turnsToPlay history = 
         if turnsToPlay = 0 then List.rev history
-        else 
+        else
             let dice = doRoll(), doRoll()
-            let doublesInARow = calculateDoubles (doublesInARow, dice)
+            let currentDoubles =
+                match (doublesFromLastThrow, dice) with
+                | ThreeDoubles, _ -> 0
+                | KeepGoing, Double -> doublesFromLastThrow + 1
+                | KeepGoing, DifferentDice -> 0
             
             let generateMovement movementType movingTo dice = 
                 let movement = 
                     { Rolled = dice
                       MovingTo = movingTo
-                      DoubleCount = doublesInARow
+                      DoubleCount = currentDoubles
                       MovementType = movementType }
                 onMovedEvent.Trigger(movement)
                 movement
             
             let movementsThisTurn = 
-                match doublesInARow with
-                | 3 -> [ generateMovement MovedTo Jail (Some dice) ]
-                | _ -> 
+                match currentDoubles with
+                | ThreeDoubles -> [ generateMovement MovedTo Jail (Some dice) ]
+                | KeepGoing -> 
                     let initialMove = generateMovement LandedOn (currentPosition |> moveBy dice) (Some dice)
                     match tryAutoMove initialMove.MovingTo with
-                    | Some automaticMove -> 
-                        let secondaryMove = generateMovement MovedTo automaticMove None
+                    | Some destination -> 
+                        let secondaryMove = generateMovement MovedTo destination None
                         [ secondaryMove; initialMove ]
                     | None -> [ initialMove ]
             
-            playTurn movementsThisTurn.Head.MovingTo doRoll doublesInARow (turnsToPlay - 1) 
+            playTurn movementsThisTurn.Head.MovingTo doRoll currentDoubles (turnsToPlay - 1) 
                 (movementsThisTurn @ history)
     
     /// Fired whenever a move occurs
