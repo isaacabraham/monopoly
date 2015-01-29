@@ -58,9 +58,10 @@ type Controller() =
             let dice = doRoll(), doRoll()
             let currentDoubles =
                 match (doublesFromLastThrow, dice) with
-                | ThreeDoubles, _ -> 0
                 | KeepGoing, Double -> doublesFromLastThrow + 1
                 | KeepGoing, DifferentDice -> 0
+                | ThreeDoubles, Double -> 1
+                | ThreeDoubles, DifferentDice -> 0
             
             let generateMovement movementType movingTo dice = 
                 let movement = 
