@@ -3,24 +3,27 @@
 open Monopoly.Data
 open System
 
-type MovementType = 
-    | LandedOn
-    | MovedTo
-    override x.ToString() =
-        match x with
-        | LandedOn -> "Landed on"
-        | MovedTo -> "Moved to"
+type DiceData = (int * int)
 
-/// A movement that has occurred for a player.
+///// A movement that has occurred for a player.
+type MovementData = 
+    { Destination : Position
+      DoubleCount : int }
+
 type MovementEvent = 
-    { Rolled : (int * int) option
-      MovingTo : Position
-      DoubleCount : int
-      MovementType : MovementType }
+    | LandedOn of MovementData * DiceData
+    | MovedTo of MovementData
+    override this.ToString() =
+        match this with
+        | LandedOn _ -> "Landed on"
+        | MovedTo _ -> "Moved to"
+    member this.MovementData =
+        match this with
+        | LandedOn (movementData, _) -> movementData
+        | MovedTo movementData -> movementData
 
 /// Manages a game.
-type Controller() = 
-    
+type Controller() =     
     let moveBy dice currentPosition = 
         let diceValue = fst dice + snd dice
         let currentIndex = Board |> List.findIndex ((=) currentPosition)
@@ -41,49 +44,50 @@ type Controller() =
         | GoToJail -> Some Jail
         | _ -> None
 
-    let (|ThreeDoubles|KeepGoing|) = function
+    let (|ThreeDoubles|LessThanThreeDoubles|) = function
         | 3 -> ThreeDoubles
-        | _ -> KeepGoing
+        | _ -> LessThanThreeDoubles
 
-    let (|Double|DifferentDice|) =
+    let (|Double|NotADouble|) =
         function
         | a,b when a = b -> Double
-        | _ -> DifferentDice        
+        | _ -> NotADouble        
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let rec playTurn currentPosition doRoll doublesFromLastThrow turnsToPlay history = 
+    let rec playTurn currentPosition doRoll previousDoubleCount turnsToPlay history = 
         if turnsToPlay = 0 then List.rev history
         else
-            let dice = doRoll(), doRoll()
-            let currentDoubles =
-                match (doublesFromLastThrow, dice) with
-                | KeepGoing, Double -> doublesFromLastThrow + 1
-                | KeepGoing, DifferentDice -> 0
+            let currentThrow = doRoll(), doRoll()
+            let currentDoubleCount =
+                match (previousDoubleCount, currentThrow) with
+                | LessThanThreeDoubles, Double -> previousDoubleCount + 1
+                | LessThanThreeDoubles, NotADouble -> 0
                 | ThreeDoubles, Double -> 1
-                | ThreeDoubles, DifferentDice -> 0
+                | ThreeDoubles, NotADouble -> 0
             
-            let generateMovement movementType movingTo dice = 
-                let movement = 
-                    { Rolled = dice
-                      MovingTo = movingTo
-                      DoubleCount = currentDoubles
-                      MovementType = movementType }
+            let generateMovement movementType movingTo throw = 
+                let movementData = { Destination = movingTo; DoubleCount = currentDoubleCount }
+                let movement =
+                    match throw with
+                    | Some throw -> LandedOn (movementData, throw)
+                    | None -> MovedTo movementData
                 onMovedEvent.Trigger(movement)
                 movement
             
             let movementsThisTurn = 
-                match currentDoubles with
-                | ThreeDoubles -> [ generateMovement MovedTo Jail (Some dice) ]
-                | KeepGoing -> 
-                    let initialMove = generateMovement LandedOn (currentPosition |> moveBy dice) (Some dice)
-                    match tryAutoMove initialMove.MovingTo with
+                match currentDoubleCount with
+                | ThreeDoubles -> [ generateMovement MovedTo Jail (Some currentThrow) ]
+                | LessThanThreeDoubles -> 
+                    let movingTo = currentPosition |> moveBy currentThrow
+                    let initialMove = generateMovement LandedOn movingTo (Some currentThrow)
+                    match tryAutoMove movingTo with
                     | Some destination -> 
                         let secondaryMove = generateMovement MovedTo destination None
                         [ secondaryMove; initialMove ]
                     | None -> [ initialMove ]
             
-            playTurn movementsThisTurn.Head.MovingTo doRoll currentDoubles (turnsToPlay - 1) 
+            playTurn movementsThisTurn.Head.MovementData.Destination doRoll currentDoubleCount (turnsToPlay - 1) 
                 (movementsThisTurn @ history)
     
     /// Fired whenever a move occurs

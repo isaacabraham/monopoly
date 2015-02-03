@@ -118,7 +118,7 @@
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
 
-            <Border Canvas.Left="0" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[FreeParking]}">
+            <Border Canvas.Left="0" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Free Parking]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
             <Border Canvas.Left="80" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Strand]}">
@@ -148,7 +148,7 @@
             <Border Canvas.Left="455" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Picaddilly]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[GoToJail]}">
+            <Border Canvas.Left="502" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Go to Jail]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
                         

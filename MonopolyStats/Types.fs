@@ -26,11 +26,11 @@ type Position =
         | Property(_, name) | Station name | Utility name | Tax name -> name
         | Chance number -> sprintf "Chance #%d" number
         | CommunityChest number -> sprintf "Community Chest #%d" number
+        | FreeParking -> "Free Parking"
+        | GoToJail -> "Go to Jail"
         | position -> sprintf "%A" position
 
 type Card = 
     | Other
     | Move of Distance:int
     | GoTo of Destination:Position
-
-

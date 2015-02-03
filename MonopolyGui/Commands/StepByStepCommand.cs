@@ -39,12 +39,16 @@ namespace MonopolyGui
             gameHistory.MoveNext();
 
             var state = gameHistory.Current;
-            var movingToName = state.MovingTo.ToString();
+            var movingToName = state.MovementData.Destination.ToString();
 
-            if (state.Rolled.IsSome())
-                Message = String.Format("Rolled {0} & {1}. {2} {3} (Doubles: {4})", state.Rolled.Value.Item1, state.Rolled.Value.Item2, state.MovementType, movingToName, state.DoubleCount);
+            if (state.IsLandedOn)
+            {
+                var landedOn = ((MovementEvent.LandedOn)state);
+                Message = String.Format("Rolled {0} & {1}. Landed on {2} (Doubles: {3})", landedOn.Item2.Item1, landedOn.Item2.Item2, movingToName, landedOn.Item1.DoubleCount);
+            }
             else
-                Message = String.Format("{0} {1}", state.MovementType, movingToName);
+                Message = String.Format("Moved to {0}", movingToName);
+
             SelectNextPosition(movingToName);
         }
 
@@ -52,7 +56,7 @@ namespace MonopolyGui
         {
             var gameHasStarted = (state != null);
             if (gameHasStarted)
-                results[state.MovingTo.ToString()].Deselect();
+                results[state.MovementData.Destination.ToString()].Deselect();
         }
         private void SelectNextPosition(String movingToName)
         {

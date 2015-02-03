@@ -10,7 +10,7 @@ let buildDisposable newColor =
 /// Gets the textual representation of a position on the board.
 let printPosition (state : MovementEvent) = 
     let color, text = 
-        match state.MovingTo with
+        match state.MovementData.Destination with
         | Property(Brown, name) -> ConsoleColor.DarkYellow, name
         | Property(Blue, name) -> ConsoleColor.Blue, name
         | Property(Pink, name) -> ConsoleColor.Magenta, name
@@ -24,10 +24,10 @@ let printPosition (state : MovementEvent) =
         | Tax name -> ConsoleColor.White, name
         | Chance number -> ConsoleColor.DarkCyan, sprintf "Chance %d" number
         | CommunityChest number -> ConsoleColor.Cyan, sprintf "Community Chest %d" number
-        | _ -> ConsoleColor.Gray, sprintf "%A" state.MovingTo
+        | _ -> ConsoleColor.Gray, sprintf "%A" state.MovementData.Destination
     
     use x = buildDisposable color
-    printfn "%A %s" state.MovementType text
+    printfn "%O %s" state text
 
 [<EntryPoint>]
 let main _ = 

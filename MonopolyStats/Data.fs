@@ -21,5 +21,5 @@ let Board =
       Station "Liverpool Street"; Chance 3;
       Property (Purple, "Park Lane"); Tax "Super Tax"; Property (Purple, "Mayfair"); ]
 
-let ChanceDeck = [GoTo <| Property (Purple, "Mayfair"); GoTo Go; GoTo Jail; GoTo <| Property (Red, "Trafalgar Square"); GoTo <| Station "Marylebone Road"; GoTo <| Property (Pink, "Pall Mall"); Move -3;] @ [for _ in 1..9 -> Card.Other]
-let CommunityChestDeck = [GoTo Go; GoTo Jail; GoTo <| Property (Brown, "Old Kent Road");] @ [for _ in 1..13 -> Card.Other]
+let ChanceDeck = [ GoTo <| Property (Purple, "Mayfair"); GoTo Go; GoTo Jail; GoTo <| Property (Red, "Trafalgar Square"); GoTo <| Station "Marylebone Road"; GoTo <| Property (Pink, "Pall Mall"); Move -3; ] @ [ for _ in 1..9 -> Card.Other ]
+let CommunityChestDeck = [ GoTo Go; GoTo Jail; GoTo <| Property (Brown, "Old Kent Road");] @ [for _ in 1..13 -> Card.Other ]
