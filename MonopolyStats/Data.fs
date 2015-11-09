@@ -1,5 +1,6 @@
 ﻿module Monopoly.Data
-    
+   
+/// Represents the positions on a Monopoly board.
 let Board =
     [ Go;
       Property (Brown, "Old Kent Road"); CommunityChest 1; Property (Brown, "Whitechapel Road");
@@ -21,5 +22,7 @@ let Board =
       Station "Liverpool Street"; Chance 3;
       Property (Purple, "Park Lane"); Tax "Super Tax"; Property (Purple, "Mayfair"); ]
 
+/// The cards within the Chance deck.
 let ChanceDeck = [ GoTo <| Property (Purple, "Mayfair"); GoTo Go; GoTo Jail; GoTo <| Property (Red, "Trafalgar Square"); GoTo <| Station "Marylebone Road"; GoTo <| Property (Pink, "Pall Mall"); Move -3; ] @ [ for _ in 1..9 -> Card.Other ]
+/// The cards with the Community Chest deck.
 let CommunityChestDeck = [ GoTo Go; GoTo Jail; GoTo <| Property (Brown, "Old Kent Road");] @ [for _ in 1..13 -> Card.Other ]

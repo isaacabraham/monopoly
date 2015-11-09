@@ -1,0 +1,7 @@
+// Warning: generated file; your changes could be lost when a new file is generated.
+#I __SOURCE_DIRECTORY__
+#load "load-references.fsx"
+#load "../Types.fs"
+      "../Data.fs"
+      "../Controller.fs"
+      "../Program.fs"

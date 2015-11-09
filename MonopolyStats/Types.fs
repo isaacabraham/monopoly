@@ -1,5 +1,6 @@
 ﻿namespace Monopoly
 
+/// Different Set colours
 type Set =
     | Brown
     | Blue
@@ -10,6 +11,7 @@ type Set =
     | Green
     | Purple
 
+/// Represents a position on the Monopoly board
 type Position = 
     | Property of Set * Name : string
     | Station of Name : string
@@ -21,8 +23,8 @@ type Position =
     | Go
     | FreeParking
     | Jail
-    override x.ToString() = 
-        match x with
+    override this.ToString() = 
+        match this with
         | Property(_, name) | Station name | Utility name | Tax name -> name
         | Chance number -> sprintf "Chance #%d" number
         | CommunityChest number -> sprintf "Community Chest #%d" number
@@ -30,7 +32,8 @@ type Position =
         | GoToJail -> "Go to Jail"
         | position -> sprintf "%A" position
 
-type Card = 
+/// A type of Community Chest or Chance card.
+type Card =
     | Other
     | Move of Distance:int
     | GoTo of Destination:Position

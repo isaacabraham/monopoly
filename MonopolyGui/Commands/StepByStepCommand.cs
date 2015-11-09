@@ -18,9 +18,9 @@ namespace MonopolyGui
 
         private List<MovementEvent>.Enumerator gameHistory;
         private readonly IDictionary<String, BoardPosition> results;
-        public String Message { get; set; }
+        public string Message { get; set; }
 
-        public Boolean CanExecute(Object parameter) { return true; }
+        public bool CanExecute(object parameter) { return true; }
         public StepByStepCommand(IDictionary<String, BoardPosition> results)
         {
             this.results = results;
@@ -33,21 +33,22 @@ namespace MonopolyGui
                 .ContinueWith(t => { gameHistory = auditRecord.GetEnumerator(); });
         }
 
-        public void Execute(Object parameter)
+        public void Execute(object parameter)
         {
             DeselectCurrentPosition(gameHistory.Current);
             gameHistory.MoveNext();
 
-            var state = gameHistory.Current;
-            var movingToName = state.MovementData.Destination.ToString();
+            var movingToName = gameHistory.Current.MovementData.Destination.ToString();
 
-            if (state.IsLandedOn)
+            // "Pattern matching" over a discriminated union in C#.
+            // If MovementEvent is of type LandedOn, cast object and work with it.
+            if (gameHistory.Current.IsLandedOn)
             {
-                var landedOn = ((MovementEvent.LandedOn)state);
-                Message = String.Format("Rolled {0} & {1}. Landed on {2} (Doubles: {3})", landedOn.Item2.Item1, landedOn.Item2.Item2, movingToName, landedOn.Item1.DoubleCount);
+                var landedOn = (MovementEvent.LandedOn)gameHistory.Current;
+                Message = string.Format("Rolled {0} & {1}. Landed on {2} (Doubles: {3})", landedOn.Item2.Item1, landedOn.Item2.Item2, movingToName, landedOn.Item1.DoubleCount);
             }
             else
-                Message = String.Format("Moved to {0}", movingToName);
+                Message = string.Format("Moved to {0}", movingToName);
 
             SelectNextPosition(movingToName);
         }
@@ -58,7 +59,7 @@ namespace MonopolyGui
             if (gameHasStarted)
                 results[state.MovementData.Destination.ToString()].Deselect();
         }
-        private void SelectNextPosition(String movingToName)
+        private void SelectNextPosition(string movingToName)
         {
             var result = results[movingToName];
             result.Increment();

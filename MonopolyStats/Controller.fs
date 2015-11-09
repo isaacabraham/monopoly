@@ -3,15 +3,19 @@
 open Monopoly.Data
 open System
 
+/// Represents the roll of two dice.
 type DiceData = (int * int)
 
-///// A movement that has occurred for a player.
+/// A movement that has occurred for a player.
 type MovementData = 
     { Destination : Position
       DoubleCount : int }
 
+/// A type of movement event.
 type MovementEvent = 
+    /// When a player lands on a position from a throw of the dice.
     | LandedOn of MovementData * DiceData
+    /// When a player lands on a position as a result of an external event e.g. chance card.
     | MovedTo of MovementData
     override this.ToString() =
         match this with
@@ -31,37 +35,47 @@ type Controller() =
         Board.[newIndex % 40]
     
     let picker = Random()
-    
-    let tryAutoMove currentPosition = 
-        let tryMoveFromDeck currentPosition deck = 
-            match (picker.Next(0, 16)) |> List.nth deck with
+
+    let tryMoveFromDeck position = 
+        let tryMoveFromDeck deck = 
+            match deck |> List.item (picker.Next(0, 16)) with
             | GoTo destination -> Some destination
-            | Move numberOfSpaces -> Some(currentPosition |> moveBy (numberOfSpaces, 0))
+            | Move numberOfSpaces -> Some(position |> moveBy (numberOfSpaces, 0))
             | Other -> None
-        match currentPosition with
-        | Chance _ -> ChanceDeck |> tryMoveFromDeck currentPosition
-        | CommunityChest _ -> CommunityChestDeck |> tryMoveFromDeck currentPosition
+        match position with
+        | Chance _ -> ChanceDeck |> tryMoveFromDeck
+        | CommunityChest _ -> CommunityChestDeck |> tryMoveFromDeck
         | GoToJail -> Some Jail
         | _ -> None
 
-    let (|ThreeDoubles|LessThanThreeDoubles|) = function
+    (* These two Active Patterns allow us to reason about the roll of dice a 
+       little more easily so that we can pattern match over some higher
+       abstractions (see below) *)
+    let (|ThreeDoubles|LessThanThreeDoubles|) numberOfDoubles =
+        match numberOfDoubles with
         | 3 -> ThreeDoubles
         | _ -> LessThanThreeDoubles
 
-    let (|Double|NotADouble|) =
-        function
+    let (|Double|NotADouble|) dice =
+        match dice with
         | a,b when a = b -> Double
         | _ -> NotADouble
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let rec playTurn currentPosition doRoll previousDoubleCount turnsToPlay history = 
-        if turnsToPlay = 0 then List.rev history
-        else
+    let playGame turnsToPlay doRoll =
+        ([], [ 1 .. turnsToPlay ])
+        ||> List.scan(fun previousMoves _ ->
+            let currentPosition =
+                match previousMoves |> List.rev with
+                | [] -> { Destination = Go; DoubleCount = 0 } // no history - start at Go.
+                | (MovedTo movementData) :: _
+                | (LandedOn (movementData, _) :: _) -> movementData // last move made
+
             let currentThrow = doRoll(), doRoll()
             let currentDoubleCount =
-                match (previousDoubleCount, currentThrow) with
-                | LessThanThreeDoubles, Double -> previousDoubleCount + 1
+                match (currentPosition.DoubleCount, currentThrow) with
+                | LessThanThreeDoubles, Double -> currentPosition.DoubleCount + 1
                 | ThreeDoubles, Double -> 1
                 | LessThanThreeDoubles, NotADouble | ThreeDoubles, NotADouble -> 0
             
@@ -74,28 +88,26 @@ type Controller() =
                 onMovedEvent.Trigger(movement)
                 movement
             
-            let movementsThisTurn = 
-                match currentDoubleCount with
-                | ThreeDoubles -> [ generateMovement Jail (Some currentThrow) ]
-                | LessThanThreeDoubles -> 
-                    let movingTo = currentPosition |> moveBy currentThrow
-                    let initialMove = generateMovement movingTo (Some currentThrow)
-                    match tryAutoMove movingTo with
-                    | Some destination -> 
-                        let secondaryMove = generateMovement destination None
-                        [ secondaryMove; initialMove ]
-                    | None -> [ initialMove ]
-            
-            playTurn movementsThisTurn.Head.MovementData.Destination doRoll currentDoubleCount (turnsToPlay - 1) 
-                (movementsThisTurn @ history)
+            match currentDoubleCount with
+            | ThreeDoubles -> [ generateMovement Jail (Some currentThrow) ]
+            | LessThanThreeDoubles -> 
+                let newPosition = currentPosition.Destination |> moveBy currentThrow
+                let initialMove = generateMovement newPosition (Some currentThrow)
+                match tryMoveFromDeck newPosition with
+                | Some forcedMove ->
+                    let secondaryMove = generateMovement forcedMove None
+                    [ initialMove; secondaryMove ]
+                | None -> [ initialMove ])
     
-    /// Fired whenever a move occurs
+    (* A CLI Event is an event that can be consumed by e.g. C# *)
+    /// Fired whenever a move occurs.
     [<CLIEvent>]
     member __.OnMoved = onMovedEvent.Publish
     
     /// Plays the game of Monopoly
-    member __.PlayGame turnsToPlay = 
+    member __.PlayGame turnsToPlay =
         let doRoll = 
             let die = new Random()
             fun () -> die.Next(1, 7)
-        playTurn Go doRoll 0 turnsToPlay []
+        playGame turnsToPlay doRoll
+        |> List.collect id
