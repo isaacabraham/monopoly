@@ -1,12 +1,13 @@
 ﻿#load @"Scripts\load-project.fsx"
 open Monopoly
 
-let printMove index move =
-    sprintf "%d: %A" index move
-
+// Create a controller
 let controller = Controller()
-let history = controller.PlayGame(50)
 
+// Play a number of moves and get the history of the game.
+let history = controller.PlayGame 50
+
+// Print out the history
 history
 |> List.map (fun m ->
     match m with
