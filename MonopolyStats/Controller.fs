@@ -23,7 +23,7 @@ type MovementEvent =
         | MovedTo movementData -> movementData
 
 /// Manages a game.
-type Controller() =     
+type Controller() =
     let moveBy dice currentPosition = 
         let diceValue = fst dice + snd dice
         let currentIndex = Board |> List.findIndex ((=) currentPosition)
@@ -51,7 +51,7 @@ type Controller() =
     let (|Double|NotADouble|) =
         function
         | a,b when a = b -> Double
-        | _ -> NotADouble        
+        | _ -> NotADouble
     
     let onMovedEvent = new Event<MovementEvent>()
     
@@ -62,11 +62,10 @@ type Controller() =
             let currentDoubleCount =
                 match (previousDoubleCount, currentThrow) with
                 | LessThanThreeDoubles, Double -> previousDoubleCount + 1
-                | LessThanThreeDoubles, NotADouble -> 0
                 | ThreeDoubles, Double -> 1
-                | ThreeDoubles, NotADouble -> 0
+                | LessThanThreeDoubles, NotADouble | ThreeDoubles, NotADouble -> 0
             
-            let generateMovement movementType movingTo throw = 
+            let generateMovement movingTo throw = 
                 let movementData = { Destination = movingTo; DoubleCount = currentDoubleCount }
                 let movement =
                     match throw with
@@ -77,13 +76,13 @@ type Controller() =
             
             let movementsThisTurn = 
                 match currentDoubleCount with
-                | ThreeDoubles -> [ generateMovement MovedTo Jail (Some currentThrow) ]
+                | ThreeDoubles -> [ generateMovement Jail (Some currentThrow) ]
                 | LessThanThreeDoubles -> 
                     let movingTo = currentPosition |> moveBy currentThrow
-                    let initialMove = generateMovement LandedOn movingTo (Some currentThrow)
+                    let initialMove = generateMovement movingTo (Some currentThrow)
                     match tryAutoMove movingTo with
                     | Some destination -> 
-                        let secondaryMove = generateMovement MovedTo destination None
+                        let secondaryMove = generateMovement destination None
                         [ secondaryMove; initialMove ]
                     | None -> [ initialMove ]
             
