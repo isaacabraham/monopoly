@@ -1,4 +1,6 @@
-﻿#load @"Scripts\load-project.fsx"
+﻿(* Use this script to experiement with the Monopoly code *)
+
+#load @"Scripts\load-project.fsx"
 open Monopoly
 
 // Create a controller
@@ -6,6 +8,7 @@ let controller = Controller()
 
 // Play a number of moves and get the history of the game.
 let history = controller.PlayGame 50
+
 
 // Print out the history
 history
