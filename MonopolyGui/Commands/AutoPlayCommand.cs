@@ -13,17 +13,17 @@ namespace MonopolyGui
     {
         public event EventHandler CanExecuteChanged;
 
-        private readonly IDictionary<String, BoardPosition> results;
-        public AutoPlayCommand(IDictionary<String, BoardPosition> results)
+        private readonly IDictionary<String, BoardPosition> positionLookup;
+        public AutoPlayCommand(IDictionary<String, BoardPosition> positionLookup)
         {
-            this.results = results;
+            this.positionLookup = positionLookup;
         }
 
         public bool CanExecute(Object parameter) { return true; }
         public void Execute(Object parameter)
         {
             var controller = new Controller();
-            controller.OnMoved += (o, e) => results[e.MovementData.Destination.ToString()].Increment();
+            controller.OnMoved += (o, e) => positionLookup[e.MovementData.Destination.ToString()].Increment();
             Task.Run(() => controller.PlayGame(50000));
         }
     }

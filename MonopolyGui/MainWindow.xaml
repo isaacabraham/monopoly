@@ -56,127 +56,127 @@
 
             <Image Source="BoardImage.jpg" Width="580" Height="580"/>
 
-            <Border Canvas.Left="502" Canvas.Top="502" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Go]}">
+            <Border Canvas.Left="502" Canvas.Top="502" Style="{StaticResource CornerPosition}" DataContext="{Binding PositionLookup[Go]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="456" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Old Kent Road]}">
+            <Border Canvas.Left="456" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Old Kent Road]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="408" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Community Chest #1]}">
+            <Border Canvas.Left="408" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Community Chest #1]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="360" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Whitechapel Road]}">
+            <Border Canvas.Left="360" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Whitechapel Road]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="315" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Income Tax]}">
+            <Border Canvas.Left="315" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Income Tax]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="268" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Kings Cross]}">
+            <Border Canvas.Left="268" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Kings Cross]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="220" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Angel Islington]}">
+            <Border Canvas.Left="220" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Angel Islington]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="172" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Chance #1]}">
+            <Border Canvas.Left="172" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Chance #1]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="125" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Euston Road]}">
+            <Border Canvas.Left="125" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Euston Road]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="80" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Pentonville Road]}">
+            <Border Canvas.Left="80" Canvas.Top="502" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Pentonville Road]}">
                 <TextBlock Style="{StaticResource BottomPositionCounter}"/>
             </Border>
 
-            <Border Canvas.Left="0" Canvas.Top="502" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Jail]}">
+            <Border Canvas.Left="0" Canvas.Top="502" Style="{StaticResource CornerPosition}" DataContext="{Binding PositionLookup[Jail]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="456" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Pall Mall]}">
+            <Border Canvas.Left="0" Canvas.Top="456" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Pall Mall]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="410" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Electric Company]}">
+            <Border Canvas.Left="0" Canvas.Top="410" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Electric Company]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="362" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Whitehall]}">
+            <Border Canvas.Left="0" Canvas.Top="362" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Whitehall]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="315" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Northumberland Avenue]}">
+            <Border Canvas.Left="0" Canvas.Top="315" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Northumberland Avenue]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="268" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Marylebone Road]}">
+            <Border Canvas.Left="0" Canvas.Top="268" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Marylebone Road]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="221" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Bow Street]}">
+            <Border Canvas.Left="0" Canvas.Top="221" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Bow Street]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="174" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Community Chest #2]}">
+            <Border Canvas.Left="0" Canvas.Top="174" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Community Chest #2]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="127" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Marlborough Street]}">
+            <Border Canvas.Left="0" Canvas.Top="127" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Marlborough Street]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
-            <Border Canvas.Left="0" Canvas.Top="80" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Vine Street]}">
+            <Border Canvas.Left="0" Canvas.Top="80" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Vine Street]}">
                 <TextBlock Style="{StaticResource BoardPosition}"/>
             </Border>
 
-            <Border Canvas.Left="0" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Free Parking]}">
+            <Border Canvas.Left="0" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding PositionLookup[Free Parking]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="80" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Strand]}">
+            <Border Canvas.Left="80" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Strand]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="126" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Chance #2]}">
+            <Border Canvas.Left="126" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Chance #2]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="172" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Fleet Street]}">
+            <Border Canvas.Left="172" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Fleet Street]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="220" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Trafalgar Square]}">
+            <Border Canvas.Left="220" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Trafalgar Square]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="268" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Fenchurch Street]}">
+            <Border Canvas.Left="268" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Fenchurch Street]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="315" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Leicester Square]}">
+            <Border Canvas.Left="315" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Leicester Square]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="360" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Coventry Street]}">
+            <Border Canvas.Left="360" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Coventry Street]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="408" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Water Works]}">
+            <Border Canvas.Left="408" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Water Works]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="455" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding Results[Picaddilly]}">
+            <Border Canvas.Left="455" Canvas.Top="0" Style="{StaticResource VerticalPosition}" DataContext="{Binding PositionLookup[Picaddilly]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding Results[Go to Jail]}">
+            <Border Canvas.Left="502" Canvas.Top="0" Style="{StaticResource CornerPosition}" DataContext="{Binding PositionLookup[Go to Jail]}">
                 <TextBlock Style="{StaticResource TopPositionCounter}"/>
             </Border>
                         
-            <Border Canvas.Left="502" Canvas.Top="80" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Regent Street]}">
+            <Border Canvas.Left="502" Canvas.Top="80" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Regent Street]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="127" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Oxford Street]}">
+            <Border Canvas.Left="502" Canvas.Top="127" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Oxford Street]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="174" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Community Chest #3]}">
+            <Border Canvas.Left="502" Canvas.Top="174" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Community Chest #3]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="221" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Bond Street]}">
+            <Border Canvas.Left="502" Canvas.Top="221" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Bond Street]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="268" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Liverpool Street]}">
+            <Border Canvas.Left="502" Canvas.Top="268" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Liverpool Street]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="316" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Chance #3]}">
+            <Border Canvas.Left="502" Canvas.Top="316" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Chance #3]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="362" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Park Lane]}">
+            <Border Canvas.Left="502" Canvas.Top="362" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Park Lane]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="410" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Super Tax]}">
+            <Border Canvas.Left="502" Canvas.Top="410" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Super Tax]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
-            <Border Canvas.Left="502" Canvas.Top="456" Style="{StaticResource HorizontalPosition}" DataContext="{Binding Results[Mayfair]}">
+            <Border Canvas.Left="502" Canvas.Top="456" Style="{StaticResource HorizontalPosition}" DataContext="{Binding PositionLookup[Mayfair]}">
                 <TextBlock Style="{StaticResource RightPositionCounter}"/>
             </Border>
         </Canvas>

@@ -25,6 +25,10 @@ let printPosition (state : MovementEvent) =
         | Chance number -> ConsoleColor.DarkCyan, sprintf "Chance %d" number
         | CommunityChest number -> ConsoleColor.Cyan, sprintf "Community Chest %d" number
         | _ -> ConsoleColor.Gray, sprintf "%A" state.MovementData.Destination
+    let text =
+        match state with
+        | LandedOn (movement, dice) -> sprintf "Rolled a %A and landed on %A (%d doubles)" dice movement.Destination movement.DoubleCount 
+        | MovedTo movement -> sprintf "Moved to %A (%d doubles)" movement.Destination movement.DoubleCount
     
     use x = buildDisposable color
     printfn "%O %s" state text
@@ -35,4 +39,5 @@ let main _ =
     let history = controller.PlayGame(100)
     for entry in history do
         printPosition entry
+    Console.Read() |> ignore
     0
