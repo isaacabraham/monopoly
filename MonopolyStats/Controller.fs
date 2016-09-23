@@ -34,11 +34,11 @@ type Controller() =
         let newIndex = currentIndex + diceValue
         Board.[newIndex % 40]
     
-    let picker = Random()
+    let cardPicker = Random()
 
     let tryMoveFromDeck position = 
         let tryMoveFromDeck deck = 
-            match deck |> List.item (picker.Next(0, 16)) with
+            match deck |> List.item (cardPicker.Next(0, 16)) with
             | GoTo destination -> Some destination
             | Move numberOfSpaces -> Some(position |> moveBy (numberOfSpaces, 0))
             | Other -> None
@@ -64,13 +64,14 @@ type Controller() =
     let onMovedEvent = new Event<MovementEvent>()
     
     let playGame turnsToPlay doRoll =
-        ([], [ 1 .. turnsToPlay ])
-        ||> List.scan(fun previousMoves _ ->
+        ((MovedTo { Destination = Go; DoubleCount = 0 }, None), [ 1 .. turnsToPlay ])
+        ||> List.scan(fun previousTurn _ ->        
+            /// Every roll can lead to one or two "moves" - the first is the standard roll of the dice,
+            /// the second might be a "forced" move e.g. go to jail / chance etc. etc.
+            /// If there was a forced move, use that, otherwise use the standard one.
             let currentPosition =
-                match previousMoves |> List.rev with
-                | [] -> { Destination = Go; DoubleCount = 0 } // no history - start at Go.
-                | (MovedTo movementData) :: _
-                | (LandedOn (movementData, _) :: _) -> movementData // last move made
+                match previousTurn with
+                | _, Some move | move, None -> move.MovementData
 
             let currentThrow = doRoll(), doRoll()
             let currentDoubleCount =
@@ -85,19 +86,19 @@ type Controller() =
                     match throw with
                     | Some throw -> LandedOn (movementData, throw)
                     | None -> MovedTo movementData
-                onMovedEvent.Trigger(movement)
+                onMovedEvent.Trigger movement
                 movement
             
             match currentDoubleCount with
-            | ThreeDoubles -> [ generateMovement Jail (Some currentThrow) ]
+            | ThreeDoubles -> generateMovement Jail (Some currentThrow), None
             | LessThanThreeDoubles -> 
                 let newPosition = currentPosition.Destination |> moveBy currentThrow
                 let initialMove = generateMovement newPosition (Some currentThrow)
                 match tryMoveFromDeck newPosition with
                 | Some forcedMove ->
                     let secondaryMove = generateMovement forcedMove None
-                    [ initialMove; secondaryMove ]
-                | None -> [ initialMove ])
+                    initialMove, Some secondaryMove
+                | None -> initialMove, None)
     
     (* A CLI Event is an event that can be consumed by e.g. C# *)
     /// Fired whenever a move occurs.
@@ -109,5 +110,9 @@ type Controller() =
         let doRoll = 
             let die = new Random()
             fun () -> die.Next(1, 7)
-        playGame turnsToPlay doRoll
-        |> List.collect id
+        
+        let allTurns = playGame turnsToPlay doRoll
+        
+        allTurns
+        |> List.collect(fun (mainRoll, optionalSecondaryMove) ->
+            mainRoll :: Option.toList optionalSecondaryMove)

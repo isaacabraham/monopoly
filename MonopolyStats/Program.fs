@@ -31,7 +31,7 @@ let printPosition (state : MovementEvent) =
         | MovedTo movement -> sprintf "Moved to %A (%d doubles)" movement.Destination movement.DoubleCount
     
     use x = buildDisposable color
-    printfn "%O %s" state text
+    printfn "%s" text
 
 [<EntryPoint>]
 let main _ = 

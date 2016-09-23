@@ -1,6 +1,6 @@
-﻿(* Use this script to experiement with the Monopoly code *)
+﻿(* Use this script to experiment with the Monopoly code *)
 
-#load @"Scripts\load-project.fsx"
+#load @"Scripts\load-project-debug.fsx"
 open Monopoly
 
 // Create a controller
@@ -14,8 +14,8 @@ let printMovementEvent m =
 // Subscribe to real-time events
 // In F# we can use list-like operations (similar to RX) over events
 controller.OnMoved
-|> Event.filter(function | MovedTo { Destination = Jail } -> true | _ -> false)
-|> Event.add (fun _ -> printfn "YOU WENT TO JAIL!")
+|> Event.filter(function MovedTo { Destination = Jail } -> true | _ -> false)
+|> Event.add(fun _ -> printfn "YOU WENT TO JAIL!")
 
 // Play a number of moves and get the history of the game.
 let history = controller.PlayGame 50

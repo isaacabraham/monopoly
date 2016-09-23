@@ -53,8 +53,8 @@
     <Compile Include="Controller.fs" />
     <Compile Include="Program.fs" />
     <None Include="Test.fsx" />
-    <None Include="Scripts\load-references.fsx" />
-    <None Include="Scripts\load-project.fsx" />
+    <None Include="Scripts\load-references-debug.fsx" />
+    <None Include="Scripts\load-project-debug.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
