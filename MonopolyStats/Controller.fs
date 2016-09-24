@@ -63,42 +63,42 @@ type Controller() =
     
     let onMovedEvent = new Event<MovementEvent>()
     
-    let playGame turnsToPlay doRoll =
-        ((MovedTo { Destination = Go; DoubleCount = 0 }, None), [ 1 .. turnsToPlay ])
-        ||> List.scan(fun previousTurn _ ->        
-            /// Every roll can lead to one or two "moves" - the first is the standard roll of the dice,
-            /// the second might be a "forced" move e.g. go to jail / chance etc. etc.
-            /// If there was a forced move, use that, otherwise use the standard one.
-            let currentPosition =
-                match previousTurn with
-                | _, Some move | move, None -> move.MovementData
+    /// Plays a single turn, based on the previous movement
+    let playTurn doRoll currentPosition =
+        let currentThrow = doRoll(), doRoll()
+        let currentDoubleCount =
+            match (currentPosition.DoubleCount, currentThrow) with
+            | LessThanThreeDoubles, Double -> currentPosition.DoubleCount + 1
+            | ThreeDoubles, Double -> 1
+            | LessThanThreeDoubles, NotADouble | ThreeDoubles, NotADouble -> 0
+            
+        let generateMovement movingTo throw = 
+            let movementData = { Destination = movingTo; DoubleCount = currentDoubleCount }
+            let movement =
+                match throw with
+                | Some throw -> LandedOn (movementData, throw)
+                | None -> MovedTo movementData
+            onMovedEvent.Trigger movement
+            movement
+            
+        match currentDoubleCount with
+        | ThreeDoubles -> generateMovement Jail (Some currentThrow), None
+        | LessThanThreeDoubles -> 
+            let newPosition = currentPosition.Destination |> moveBy currentThrow
+            let initialMove = generateMovement newPosition (Some currentThrow)
+            match tryMoveFromDeck newPosition with
+            | Some forcedMove ->
+                let secondaryMove = generateMovement forcedMove None
+                initialMove, Some secondaryMove
+            | None -> initialMove, None
 
-            let currentThrow = doRoll(), doRoll()
-            let currentDoubleCount =
-                match (currentPosition.DoubleCount, currentThrow) with
-                | LessThanThreeDoubles, Double -> currentPosition.DoubleCount + 1
-                | ThreeDoubles, Double -> 1
-                | LessThanThreeDoubles, NotADouble | ThreeDoubles, NotADouble -> 0
-            
-            let generateMovement movingTo throw = 
-                let movementData = { Destination = movingTo; DoubleCount = currentDoubleCount }
-                let movement =
-                    match throw with
-                    | Some throw -> LandedOn (movementData, throw)
-                    | None -> MovedTo movementData
-                onMovedEvent.Trigger movement
-                movement
-            
-            match currentDoubleCount with
-            | ThreeDoubles -> generateMovement Jail (Some currentThrow), None
-            | LessThanThreeDoubles -> 
-                let newPosition = currentPosition.Destination |> moveBy currentThrow
-                let initialMove = generateMovement newPosition (Some currentThrow)
-                match tryMoveFromDeck newPosition with
-                | Some forcedMove ->
-                    let secondaryMove = generateMovement forcedMove None
-                    initialMove, Some secondaryMove
-                | None -> initialMove, None)
+    let playGame turnsToPlay doRoll =
+        let getCurrentPosition (previousTurn:MovementEvent * MovementEvent option) =
+            match previousTurn with
+            | _, Some move | move, None -> move.MovementData
+
+        ((MovedTo { Destination = Go; DoubleCount = 0 }, None), [ 1 .. turnsToPlay ])
+        ||> List.scan (fun lastTurn _ -> lastTurn |> getCurrentPosition |> playTurn doRoll )
     
     (* A CLI Event is an event that can be consumed by e.g. C# *)
     /// Fired whenever a move occurs.
