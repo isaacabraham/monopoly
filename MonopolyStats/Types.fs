@@ -35,5 +35,5 @@ type Position =
 /// A type of Community Chest or Chance card.
 type Card =
     | Other
-    | Move of Distance:int
-    | GoTo of Destination:Position
+    | Move of Distance : int
+    | GoTo of Destination : Position

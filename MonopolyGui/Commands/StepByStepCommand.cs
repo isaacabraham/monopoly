@@ -38,7 +38,7 @@ namespace MonopolyGui
             DeselectCurrentPosition(gameHistory.Current);
             gameHistory.MoveNext();
 
-            var movingToName = gameHistory.Current.MovementData.Destination.ToString();
+            var movingToName = gameHistory.Current.MovementData.CurrentPosition.ToString();
 
             // "Pattern matching" over a discriminated union in C#.
             // If MovementEvent is of type LandedOn, cast object and work with it.
@@ -57,7 +57,7 @@ namespace MonopolyGui
         {
             var gameHasStarted = (state != null);
             if (gameHasStarted)
-                results[state.MovementData.Destination.ToString()].Deselect();
+                results[state.MovementData.CurrentPosition.ToString()].Deselect();
         }
         private void SelectNextPosition(string movingToName)
         {
