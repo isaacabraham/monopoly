@@ -104,13 +104,13 @@ module Functions =
     /// <summary>
     /// Plays a full game.
     /// </summary>
+    /// <param name="random">Random number generator.</param>
     /// <param name="turnsToPlay">The number of turns to play for.</param>
     /// <param name="onMove">Function called whenever a turn is played.</param>
     /// <param name="seed">Optional random seed.</param>
-    let playGame turnsToPlay onMove seed =
+    let playGame (random:System.Random) onMove turnsToPlay =
         /// Plays a single turn.
         let playTurn =
-            let random = match seed with | Some seed -> Random seed | None -> Random()
             let doRoll() = random.Next(1, 7)
             let pickCard() = random.Next(0, 16)
             playTurn doRoll pickCard onMove
@@ -133,4 +133,6 @@ type Controller() =
     member __.OnMoved = onMovedEvent.Publish
     
     /// Plays the game of Monopoly
-    member __.PlayGame turnsToPlay = Functions.playGame turnsToPlay onMovedEvent.Trigger None
+    member __.PlayGame turnsToPlay =
+        let random = Random()
+        Functions.playGame random onMovedEvent.Trigger turnsToPlay
