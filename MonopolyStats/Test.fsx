@@ -6,7 +6,7 @@ open Monopoly
 // Experiment with standalone functions
 Go |> Functions.moveBy (5, 3)
 (Position.Property(Set.Yellow, "Picaddilly")) |> Functions.moveBy (3, 1)
-Functions.playTurn (fun () -> 3) (fun () -> 5) ignore { CurrentPosition = Go; DoubleCount = 0 }
+Functions.playTurn (fun () -> 3, 4) (fun () -> 5) ignore { CurrentPosition = Go; DoubleCount = 0 }
 
 
 

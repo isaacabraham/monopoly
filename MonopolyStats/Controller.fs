@@ -58,6 +58,14 @@ module Functions =
         | a,b when a = b -> Double
         | _ -> NotADouble
 
+    /// Given a Random, returns a function that will generate two dice rolls on each call.
+    let createDiceThrow (random:Random) =
+        let doRoll() = random.Next(1, 7)
+        fun() -> doRoll(), doRoll()
+
+    /// Given a Random, returns a function that will pick a number between 0 and 15
+    let createPickCard (random:Random) = fun () -> random.Next(0, 15)
+
     /// <summary>
     /// Plays a single turn, based on the previous movement.
     /// </summary>
@@ -66,8 +74,8 @@ module Functions =
     /// <param name="publishMove">Publish a move to some side-effectful listener.</param>
     /// <param name="moveData">The movement data from the previous turn.</param>
     /// <returns>Returns a new position and optionally a secondary position (caused by e.g. rolling 3 doubles or chance etc. etc.)</returns>
-    let playTurn doRoll pickCard publishMove moveData =
-        let currentThrow = doRoll(), doRoll()
+    let playTurn rollDice pickCard publishMove moveData =
+        let currentThrow = rollDice()
         let currentDoubleCount =
             match (moveData.DoubleCount, currentThrow) with
             | LessThanThreeDoubles, Double -> moveData.DoubleCount + 1
@@ -108,12 +116,9 @@ module Functions =
     /// <param name="turnsToPlay">The number of turns to play for.</param>
     /// <param name="onMove">Function called whenever a turn is played.</param>
     /// <param name="seed">Optional random seed.</param>
-    let playGame (random:System.Random) onMove turnsToPlay =
+    let playGame rollDice pickCard onMove turnsToPlay =
         /// Plays a single turn.
-        let playTurn =
-            let doRoll() = random.Next(1, 7)
-            let pickCard() = random.Next(0, 16)
-            playTurn doRoll pickCard onMove
+        let playTurn = playTurn rollDice pickCard onMove
 
         let getCurrentPosition (previousTurn:MovementEvent * MovementEvent option) =
             match previousTurn with
@@ -135,4 +140,6 @@ type Controller() =
     /// Plays the game of Monopoly
     member __.PlayGame turnsToPlay =
         let random = Random()
-        Functions.playGame random onMovedEvent.Trigger turnsToPlay
+        let rollDice = Functions.createDiceThrow random
+        let pickCard = Functions.createPickCard random
+        Functions.playGame rollDice pickCard onMovedEvent.Trigger turnsToPlay
