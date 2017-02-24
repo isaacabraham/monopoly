@@ -64,7 +64,7 @@ module Functions =
         fun() -> doRoll(), doRoll()
 
     /// Given a Random, returns a function that will pick a number between 0 and 15
-    let createPickCard (random:Random) = fun () -> random.Next(0, 15)
+    let createPickCard (random:Random) = fun () -> random.Next(0, 16)
 
     /// <summary>
     /// Plays a single turn, based on the previous movement.
