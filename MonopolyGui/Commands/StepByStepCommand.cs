@@ -1,6 +1,5 @@
 using Microsoft.FSharp.Core;
 using Monopoly;
-using PropertyChanged;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace MonopolyGui
     /// <summary>
     /// Plays a game one move at a time.
     /// </summary>
-    [ImplementPropertyChanged]
     public class StepByStepCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;

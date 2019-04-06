@@ -1,15 +1,14 @@
 using Monopoly;
-using PropertyChanged;
 using System;
 using System.Windows.Media;
+using UI.MVVM.ViewModel;
 
 namespace MonopolyGui
 {
     /// <summary>
     /// Represents a position on the monopoly board.
     /// </summary>
-    [ImplementPropertyChanged]
-    public class BoardPosition
+    public class BoardPosition : ViewModelBase
     {
         /// <summary>
         /// The actual position data.
