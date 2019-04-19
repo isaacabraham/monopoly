@@ -1,7 +1,6 @@
 using Monopoly;
 using System;
 using System.Windows.Media;
-using UI.MVVM.ViewModel;
 
 namespace MonopolyGui
 {

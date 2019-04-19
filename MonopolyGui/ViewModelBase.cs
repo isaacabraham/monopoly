@@ -1,20 +1,19 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace UI.MVVM.ViewModel
+// based on https://gist.github.com/milbrandt/a56ed3e44d265e2a8204e290d6abb435
+namespace MonopolyGui
 {
     /// <summary>
-    /// Abstrakte Basisklasse zum Bereitstellen des Interfaces INotifyPropertyChanged
+    /// abstract base class to supply interfaces INotifyPropertyChanged
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        //[NotifyPropertyChangedInvocator] - ReSharper attribute https://stackoverflow.com/questions/23213146/what-is-notifypropertychangedinvocator-in-c-sharp-when-implements-inotifyprope
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        // Alternativ bzw ergänzend aus Kühnel, C#6 mit Visual Studio 2015
         /// <summary>
         /// Generic method, stores new property value in an intended private  field and fires event PropertyChanged
         /// </summary>
