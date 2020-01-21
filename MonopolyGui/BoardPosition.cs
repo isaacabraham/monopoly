@@ -1,5 +1,4 @@
 using Monopoly;
-using PropertyChanged;
 using System;
 using System.Windows.Media;
 
@@ -8,8 +7,7 @@ namespace MonopolyGui
     /// <summary>
     /// Represents a position on the monopoly board.
     /// </summary>
-    [ImplementPropertyChanged]
-    public class BoardPosition
+    public class BoardPosition : ViewModelBase
     {
         /// <summary>
         /// The actual position data.
